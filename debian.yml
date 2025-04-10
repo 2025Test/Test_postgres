@@ -1,0 +1,5 @@
+postgresql_packages:
+  - postgresql
+  - postgresql-contrib
+postgresql_service: postgresql
+pg_hba_path: /etc/postgresql/13/main/pg_hba.conf
