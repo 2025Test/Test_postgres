@@ -1,0 +1,35 @@
+---
+- name: PostgreSQL Installation and Configuration
+  hosts: servers
+  gather_facts: yes
+  become: yes
+
+  pre_tasks:
+    - name: Display Start Message
+      debug:
+        msg: "Starting PostgreSQL installation process..."
+      run_once: true
+
+  tasks:
+    - name: Include common role for load checking
+      include_role:
+        name: common
+      
+    - name: Show Progress
+      debug:
+        msg: "Load check completed on {{ inventory_hostname }}"
+
+    - name: Determine least loaded server
+      set_fact:
+        is_target_server: "{{ server_load == (groups['servers'] | map('extract', hostvars, 'server_load') | min) }}"
+
+    - name: Show Selected Server
+      debug:
+        msg: "Server {{ inventory_hostname }} selected for PostgreSQL installation"
+      when: is_target_server
+
+  post_tasks:
+    - name: Display Completion Message
+      debug:
+        msg: "PostgreSQL installation process completed successfully!"
+      run_once: true
